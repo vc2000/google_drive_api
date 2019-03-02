@@ -69,9 +69,35 @@ def download(file_id,filepath,):
         f.write(fh.read())
 
 
+def creatfolder(foldername):
+    file_metadata = {
+    'name': foldername,
+    'mimeType': 'application/vnd.google-apps.folder'
+    }
+    file = drive_service.files().create(body=file_metadata,
+                                        fields='id').execute()
+    print ('Folder ID: %s' % file.get('id'))
+
+def searchfile(size,query):
+    results = drive_service.files().list(
+    pageSize=size, fields="nextPageToken, files(id, name)", q=query).execute()
+    items = results.get('files', [])
+
+    if not items:
+        print('No files found.')
+    else:
+        print('Files:')
+        for item in items:
+            print(u'{0} ({1})'.format(item['name'], item['id']))
+
 
 
 #upload('sailorvenus.png','upload_files/sailorvenus.png','image/png')
 
 ## download file before need to run list file!
-download('1g5T4wD8eM9K5lI8EH58Ntvs-uZhHfsp-','./download_files/sailorvenus.png')
+#download('1g5T4wD8eM9K5lI8EH58Ntvs-uZhHfsp-','./download_files/sailorvenus.png')
+
+
+#creatfolder('created-by-api')
+
+#searchfile(10,"name contains 'api'")
