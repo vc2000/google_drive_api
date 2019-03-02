@@ -1,10 +1,10 @@
 from __future__ import print_function
 import pickle
-import os.path
+import os.path , io
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from apiclient.http import MediaFileUpload
+from apiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive']
@@ -53,9 +53,25 @@ def upload(filename,filepath,mimetype):
                                         media_body=media,
                                         fields='id').execute()
     print ('File ID: %s' % file.get('id'))
-    
+
+def download(file_id,filepath):
+    #file_id = '0BwwA4oUTeiV1UVNwOHItT0xfa2M'
+    request = drive_service.files().get(fileId=file_id)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+        print ("Download %d%%." % int(status.progress() * 100))
+
+    with io.open(filepath,'wb') as f:
+        fh.seek(0)
+        f.write(fh.read())
 
 
 
-if __name__ == '__main__':
-    upload('sailorvenus.png','upload_files/sailorvenus.png','image/png')
+
+#upload('sailorvenus.png','upload_files/sailorvenus.png','image/png')
+
+## download file before need to run list file!
+download('1g5T4wD8eM9K5lI8EH58Ntvs-uZhHfsp-','./download_files/sailorvenus.png')
