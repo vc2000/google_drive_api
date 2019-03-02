@@ -54,9 +54,9 @@ def upload(filename,filepath,mimetype):
                                         fields='id').execute()
     print ('File ID: %s' % file.get('id'))
 
-def download(file_id,filepath):
+def download(file_id,filepath,):
     #file_id = '0BwwA4oUTeiV1UVNwOHItT0xfa2M'
-    request = drive_service.files().get(fileId=file_id)
+    request = drive_service.files().get_media(fileId=file_id)
     fh = io.BytesIO()
     downloader = MediaIoBaseDownload(fh, request)
     done = False
