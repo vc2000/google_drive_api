@@ -1,3 +1,4 @@
 *.json
+*.pickle
 /upload_files
 /download_files
